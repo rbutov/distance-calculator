@@ -1,4 +1,4 @@
-##Distance Calculator
+## Distance Calculator
 _add you own GOOGLE_API_KEY to the docker-compose files for dev and prod env's.
 ### _to start dev:
 ```
