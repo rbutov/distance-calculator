@@ -1,0 +1,8 @@
+Flask
+flask-inputs
+requests
+pytest
+pymongo
+geopy
+requests_mock
+mongomock

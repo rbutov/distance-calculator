@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  frontend-test:
+    image: "frontend:test"
+    container_name: frontend-test
+    build:
+      context: ./project/frontend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./project/frontend:/usr/app
+      - /usr/app/node_modules
+  backend-test:
+    image: "backend:test"
+    container_name: backend-test
+    entrypoint:
+      - pytest
+    build:
+      context: ./project/backend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./project/backend:/usr/app

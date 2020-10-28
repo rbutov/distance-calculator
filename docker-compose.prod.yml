@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  frontend:
+    image: "frontend-prod"
+    container_name: frontend
+    restart: always
+    build:
+      context: ./project/frontend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./project/frontend:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - 80:80
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=production
+    links:
+      - backend
+    depends_on:
+      - backend
+  backend:
+    image: "backend-prod"
+    container_name: backend
+    restart: always
+    entrypoint:
+      - flask
+      - run
+      - --host=0.0.0.0
+    environment:
+      MONGODB_DATABASE: geo
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: admin
+      MONGODB_HOSTNAME: db
+      GOOGLE_API_KEY: <YOUR API KEY>
+      FLASK_APP: ./app.py
+      PYTHONUNBUFFERED: 1
+      PRODUCTION: 1
+    build:
+      context: ./project/backend
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./project/backend:/usr/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    container_name: db
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_DATABASE: geo
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - 27017:27017
+    volumes:
+      - ./project/mongodbdata:/data/db
